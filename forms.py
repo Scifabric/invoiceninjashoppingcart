@@ -7,7 +7,9 @@ from wtforms.fields.html5 import EmailField
 
 class NewClient(Form):
     """New Client Form."""
-    name = StringField('name', validators=[DataRequired()])
+    name = StringField('name')
+    first_name = StringField('First name', validators=[DataRequired()])
+    last_name = StringField('Last name', validators=[DataRequired()])
     address1 = StringField('Address', validators=[DataRequired()])
     address2 = StringField('Address 2')
     city = StringField('City', validators=[DataRequired()])

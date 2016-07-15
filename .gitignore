@@ -2,3 +2,4 @@
 env/*
 *.swp
 *.un~
+settings.py
