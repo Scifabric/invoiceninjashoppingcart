@@ -1,0 +1,3 @@
+SECRET_KEY = 'A GOOD SECRET KEY'
+CORS = 'http://domainthatyouwillenabletouseCORS.com'
+TOKEN = 'InvoiceNinjaTOKEN'
