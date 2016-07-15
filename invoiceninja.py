@@ -23,7 +23,11 @@ class invoiceNinja(object):
         res = requests.get(self.url + suburl, json=client, headers=self.headers)
         if res.status_code == 200:
             data = res.json()
-            if len(data['data']) >= 1:
+            if len(data['data']) > 0:
+                if (len(data['data']) > 1) and (data['data'][0]['is_deleted'] == True):
+                    return False
+                if (len(data['data']) == 1) and (data['data'][0]['is_deleted'] == True):
+                    return False
                 d = dict()
                 d['data'] = data['data'][0]
                 self.client = d
@@ -35,8 +39,10 @@ class invoiceNinja(object):
     def create_client(self, client):
         """Create a client in Invoice Ninja."""
         client_data = self.exists_client(client)
+        print client_data
         if not client_data:
             res = requests.post(self.url + 'clients', json=client, headers=self.headers)
+            print res.text
             if res.status_code == 200:
                 self.client = res.json()
                 return self.client
