@@ -55,7 +55,6 @@ class invoiceNinja(object):
 
     def create_invoice(self, product):
         """Create an invoice for a client."""
-        print self.client
         product['client_id'] = self.client['data']['id']
         res = requests.post(self.url + 'invoices?include=invitations', json=product,
                             headers=self.headers)
