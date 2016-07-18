@@ -96,7 +96,7 @@ class invoiceNinja(object):
             return res.json()
 
 
-    def checkout(self, client, product):
+    def checkout(self, client, product): # pragma: no cover
         """Create a client and an invoice for the client."""
         self.create_client(client)
         self.create_invoice(product)
