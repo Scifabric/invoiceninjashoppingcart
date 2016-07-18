@@ -44,3 +44,13 @@ def return_client_from_in():
 
 client_from_invoice_ninja = FakeRequest(return_client_from_in, 200, mimetype)
 client_from_invoice_ninja_403 = FakeRequest(return_client_from_in, 403, mimetype)
+
+
+def return_invoice():
+    return dict(data=dict(id=1))
+
+def return_403():
+    return dict(err=403)
+
+invoice_response = FakeRequest(return_invoice, 200, mimetype)
+invoice_response_403 = FakeRequest(return_403, 403, mimetype)
