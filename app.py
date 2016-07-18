@@ -46,6 +46,11 @@ def newinvoice():
             d = dict(error=1)
             return jsonify(d)
 
+@app.route("/countries")
+def get_countries():
+    """Return a list of countries and its IDs."""
+    return jsonify(invoiceninja.static['countries'])
+
 
 def format_invoice_data(data):
     invoice = dict()
