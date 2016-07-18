@@ -28,9 +28,7 @@ class invoiceNinja(object):
         if res.status_code == 200:
             data = res.json()
             if len(data['data']) > 0:
-                if (len(data['data']) > 1) and (data['data'][0]['is_deleted'] == True):
-                    return False
-                if (len(data['data']) == 1) and (data['data'][0]['is_deleted'] == True):
+                if (len(data['data']) >= 1) and (data['data'][0]['is_deleted'] == True):
                     return False
                 d = dict()
                 d['data'] = data['data'][0]
