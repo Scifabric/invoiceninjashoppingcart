@@ -129,3 +129,44 @@ class TestInvoiceNinja(object):
         res = iv.create_invoice(dict(qty=1))
         err_msg = "Something went wrong, it returns error"
         assert res['err'] == 403, err_msg
+
+    @patch('invoiceninja.invoiceNinja.get_static_data', return_value=data.static)
+    @patch('invoiceninja.requests.post', return_value=data.invoice_response)
+    def test_create_recurring_invoice_monthly(self, mock1, mock2):
+        """Test create recurring invoice works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        iv.client = dict()
+        iv.client['data'] = dict()
+        iv.client['data']['id'] = 1
+        res = iv.create_recurring_invoice(dict(qty=1, recurring='monthly'))
+        err_msg = "There should be an invoice"
+        assert res['data']['id'] == 1, err_msg
+        assert iv.invoice['data']['id'] == 1, err_msg
+
+    @patch('invoiceninja.invoiceNinja.get_static_data', return_value=data.static)
+    @patch('invoiceninja.requests.post', return_value=data.invoice_response)
+    def test_create_recurring_invoice_annually(self, mock1, mock2):
+        """Test create recurring invoice works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        iv.client = dict()
+        iv.client['data'] = dict()
+        iv.client['data']['id'] = 1
+        res = iv.create_recurring_invoice(dict(qty=1, recurring='annually'))
+        err_msg = "There should be an invoice"
+        assert res['data']['id'] == 1, err_msg
+        assert iv.invoice['data']['id'] == 1, err_msg
+
+    @patch('invoiceninja.invoiceNinja.get_static_data', return_value=data.static)
+    @patch('invoiceninja.requests.post', return_value=data.invoice_response_403)
+    def test_create_recurring_invoice_403(self, mock1, mock2):
+        """Test create invoice works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        iv.client = dict()
+        iv.client['data'] = dict()
+        iv.client['data']['id'] = 1
+        res = iv.create_recurring_invoice(dict(qty=1, recurring='monthly'))
+        err_msg = "Something went wrong, it returns error"
+        assert res['err'] == 403, err_msg
