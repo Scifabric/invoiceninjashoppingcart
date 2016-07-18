@@ -1,0 +1,6 @@
+Flask
+Flask-Cors
+Flask-WTF==0.9.5
+python-dateutil
+requests
+urllib3[secure]
