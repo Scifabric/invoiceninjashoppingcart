@@ -170,3 +170,13 @@ class TestInvoiceNinja(object):
         res = iv.create_recurring_invoice(dict(qty=1, recurring='monthly'))
         err_msg = "Something went wrong, it returns error"
         assert res['err'] == 403, err_msg
+
+    @patch('invoiceninja.invoiceNinja.get_static_data', return_value=data.static)
+    def test_get_frequency_id(self, mock1):
+        """Test get_frequency_id works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        id = iv.get_frequency_id('monthly')
+        err_msg = "ID should be 4"
+        assert id == 4, err_msg
+
