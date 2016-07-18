@@ -14,6 +14,8 @@ class invoiceNinja(object):
         self.url = url
         self.headers = {'X-Ninja-Token': self.token}
         self.static = self.get_static_data()
+        self.client = None
+        self.invoice = None
 
     def get_static_data(self):
         """Get static data from Invoice Ninja."""
@@ -53,6 +55,7 @@ class invoiceNinja(object):
 
     def create_invoice(self, product):
         """Create an invoice for a client."""
+        print self.client
         product['client_id'] = self.client['data']['id']
         res = requests.post(self.url + 'invoices?include=invitations', json=product,
                             headers=self.headers)
