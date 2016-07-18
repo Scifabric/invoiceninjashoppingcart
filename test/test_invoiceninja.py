@@ -70,3 +70,13 @@ class TestInvoiceNinja(object):
         client = iv.exists_client(data.client)
         err_msg = "It should return False, as client does not exist."
         assert client == False, err_msg
+
+    @patch('invoiceninja.requests.get', return_value=data.client_response_exists)
+    @patch('invoiceninja.requests.post', return_value=data.client_response_exists)
+    def test_create_client(self, mock_data, mock_post):
+        """Test create_client works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        res = iv.create_client(data.client)
+        err_msg = "It should return the client as it already exists."
+        assert res['data'] == data.client, err_msg
