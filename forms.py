@@ -15,6 +15,7 @@ class NewClient(Form):
     city = StringField('City', validators=[DataRequired()])
     state = StringField('State', validators=[DataRequired()])
     postal_code = StringField('Postal Code', validators=[DataRequired()])
+    country = StringField('Country', validators=[DataRequired()])
     email = EmailField('Email', validators=[DataRequired(), Email()])
     vat = StringField('VAT')
 
