@@ -89,3 +89,16 @@ class TestInvoiceNinja(object):
         res = iv.create_client(data.client)
         err_msg = "It should a new client and have an ID."
         assert res['id'] == 1, err_msg
+        assert iv.client['id'] == 1, err_msg
+
+    @patch('invoiceninja.requests.get', return_value=data.client_response_no_exists)
+    @patch('invoiceninja.requests.post', return_value=data.client_from_invoice_ninja_403)
+    def test_create_client_400(self, mock_data, mock_post):
+        """Test create_client works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        res = iv.create_client(data.client)
+        err_msg = "It should a new client and have an ID."
+        assert res['id'] == 1, err_msg
+        err_msg = "Client should not be created"
+        assert hasattr(iv, 'client') == False, err_msg
