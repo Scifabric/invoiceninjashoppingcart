@@ -46,6 +46,7 @@ def newinvoice():
             d = dict(error=1)
             return jsonify(d)
 
+
 @app.route("/countries")
 def get_countries():
     """Return a list of countries and its IDs."""
