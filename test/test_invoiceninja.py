@@ -31,3 +31,34 @@ class TestInvoiceNinja(object):
         assert iv.url == 'http://myurl.com', err_msg
         assert 'X-Ninja-Token' in iv.headers.keys(), err_msg
         assert iv.headers['X-Ninja-Token'] == 'token', err_msg
+
+    @patch('invoiceninja.requests.get', return_value=data.client_response_exists)
+    def test_exists_client_returns_client(self, mock_data):
+        """Test exists_client works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        client = iv.exists_client(data.client)
+        err_msg = "It should return a client, as it exists."
+        assert client['data'] == data.client, err_msg
+
+    @patch('invoiceninja.requests.get', return_value=data.client_response_exists)
+    def test_exists_client_returns_false_is_deleted(self, mock_data):
+        """Test exists_client works."""
+
+        data.client['is_deleted'] = True
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        client = iv.exists_client(data.client)
+        err_msg = "It should return False, as it exists but has been deleted."
+        assert client == False, err_msg
+
+
+    @patch('invoiceninja.requests.get', return_value=data.client_response_no_exists)
+    def test_exists_client_returns_false(self, mock_data):
+        """Test exists_client works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        client = iv.exists_client(data.client)
+        print client
+        err_msg = "It should return False, as client does not exist."
+        assert client == False, err_msg

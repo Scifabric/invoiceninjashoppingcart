@@ -19,7 +19,19 @@ FakeRequest = namedtuple('FakeRequest', ['json', 'status_code', 'headers'])
 
 mimetype = {'content-type': 'application/json'}
 
-def return_json():
+def return_static():
     return dict(data=static)
 
-static_response = FakeRequest(return_json, 200, mimetype)
+static_response = FakeRequest(return_static, 200, mimetype)
+
+client = dict(contact=dict(email='me@me.com'), is_deleted=False)
+
+def return_client():
+    return dict(data=[client])
+
+client_response_exists = FakeRequest(return_client, 200, mimetype)
+
+def return_no_client():
+    return dict(data=[])
+
+client_response_no_exists = FakeRequest(return_no_client, 200, mimetype)
