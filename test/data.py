@@ -35,3 +35,4 @@ def return_no_client():
     return dict(data=[])
 
 client_response_no_exists = FakeRequest(return_no_client, 200, mimetype)
+client_response_no_403 = FakeRequest(return_no_client, 403, mimetype)

@@ -59,6 +59,14 @@ class TestInvoiceNinja(object):
 
         iv = invoiceNinja(token='token', url='http://myurl.com')
         client = iv.exists_client(data.client)
-        print client
+        err_msg = "It should return False, as client does not exist."
+        assert client == False, err_msg
+
+    @patch('invoiceninja.requests.get', return_value=data.client_response_no_403)
+    def test_exists_client_returns_false_403(self, mock_data):
+        """Test exists_client works."""
+
+        iv = invoiceNinja(token='token', url='http://myurl.com')
+        client = iv.exists_client(data.client)
         err_msg = "It should return False, as client does not exist."
         assert client == False, err_msg
