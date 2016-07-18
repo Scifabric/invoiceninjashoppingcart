@@ -39,8 +39,11 @@ def newinvoice():
     else:
         if form.validate_on_submit():
             invoice = format_invoice_data(form.data)
-            #res = invoiceninja.create_recurring_invoice(invoice)
-            res = invoiceninja.create_invoice(invoice)
+            if invoice['recurring'] != '':
+                del invoice['email_invoice']
+                res = invoiceninja.create_recurring_invoice(invoice)
+            else:
+                res = invoiceninja.create_invoice(invoice)
             return jsonify(res)
         else:
             d = dict(error=1)
@@ -60,6 +63,7 @@ def format_invoice_data(data):
     del data['client_id']
     del data['recurring']
     invoice['invoice_items'] = [data.copy()]
+    invoice['email_invoice'] = True
     return invoice
 
 

@@ -80,14 +80,14 @@ class invoiceNinja(object):
             product['end_date'] = end_date
             product['frequency_id'] = self.get_frequency_id('monthly')
 
-        if product['recurring'] == 'yearly':
+        if product['recurring'] == 'annually':
             end_date = (today + relativedelta(years=1)).isoformat()
             product['end_date'] = end_date
             product['frequency_id'] = self.get_frequency_id('annually')
 
         del product['recurring']
 
-        res = requests.post(self.url + 'invoices', json=product,
+        res = requests.post(self.url + 'invoices?include=invitations', json=product,
                             headers=self.headers)
         if res.status_code == 200:
             self.invoice = res.json()
