@@ -13,9 +13,6 @@ class invoiceNinja(object):
         self.token = token
         self.url = url
         self.headers = {'X-Ninja-Token': self.token}
-        self.recurring_opt = {'weekly': 1, 'twoweeks': 2, 'fourweeks': 3, 
-                              'monthly': 4, 'threemonths': 5, 'sixmonths': 6, 
-                              'yearly': 7}
         self.static = self.get_static_data()
 
     def get_static_data(self):
@@ -81,12 +78,12 @@ class invoiceNinja(object):
             end_date = (today + datetime.timedelta(days=365)).isoformat()
             end_date = (today + relativedelta(months=1)).isoformat()
             product['end_date'] = end_date
-            product['frequency_id'] = self.recurring_opt.get('monthly')
+            product['frequency_id'] = self.get_frequency_id('monthly')
 
         if product['recurring'] == 'yearly':
             end_date = (today + relativedelta(years=1)).isoformat()
             product['end_date'] = end_date
-            product['frequency_id'] = self.recurring_opt.get('yearly')
+            product['frequency_id'] = self.get_frequency_id('annually')
 
         del product['recurring']
 
@@ -103,3 +100,9 @@ class invoiceNinja(object):
         """Create a client and an invoice for the client."""
         self.create_client(client)
         self.create_invoice(product)
+
+    def get_frequency_id(self, name):
+        """Return frequency ID for name."""
+        for f in self.static['frequencies']:
+            if f['name'].lower() == name.lower():
+                return f['id']
