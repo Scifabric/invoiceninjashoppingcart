@@ -16,6 +16,13 @@ class invoiceNinja(object):
         self.recurring_opt = {'weekly': 1, 'twoweeks': 2, 'fourweeks': 3, 
                               'monthly': 4, 'threemonths': 5, 'sixmonths': 6, 
                               'yearly': 7}
+        self.static = self.get_static_data()
+
+    def get_static_data(self):
+        """Get static data from Invoice Ninja."""
+        res = requests.get(self.url + 'static', headers=self.headers)
+        if res.status_code == 200:
+            return res.json()['data']
 
     def exists_client(self, client):
         """Return True if client exists."""
@@ -39,10 +46,8 @@ class invoiceNinja(object):
     def create_client(self, client):
         """Create a client in Invoice Ninja."""
         client_data = self.exists_client(client)
-        print client_data
         if not client_data:
             res = requests.post(self.url + 'clients', json=client, headers=self.headers)
-            print res.text
             if res.status_code == 200:
                 self.client = res.json()
                 return self.client
@@ -54,7 +59,7 @@ class invoiceNinja(object):
     def create_invoice(self, product):
         """Create an invoice for a client."""
         product['client_id'] = self.client['data']['id']
-        res = requests.post(self.url + 'invoices', json=product,
+        res = requests.post(self.url + 'invoices?include=invitations', json=product,
                             headers=self.headers)
         if res.status_code == 200:
             self.invoice = res.json()

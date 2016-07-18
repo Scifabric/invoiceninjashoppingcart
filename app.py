@@ -39,7 +39,8 @@ def newinvoice():
     else:
         if form.validate_on_submit():
             invoice = format_invoice_data(form.data)
-            res = invoiceninja.create_recurring_invoice(invoice)
+            #res = invoiceninja.create_recurring_invoice(invoice)
+            res = invoiceninja.create_invoice(invoice)
             return jsonify(res)
         else:
             d = dict(error=1)
@@ -59,7 +60,7 @@ def format_invoice_data(data):
 def format_client_data(data):
     client = dict()
     client['contact'] = dict()
-    client['contact'] = {'email': data['email'], 'first_name': data['first_name'], 
+    client['contact'] = {'email': data['email'], 'first_name': data['first_name'],
                          'last_name': data['last_name']}
     if not data['name']:
         data['name'] = "%s %s" % (data['first_name'], data['last_name'])
