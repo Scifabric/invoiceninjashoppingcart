@@ -105,3 +105,21 @@ class TestApp(object):
         assert res['invoice_items'] == [dat], err_msg
         assert 'email_invoice' in res.keys(), err_msg
         assert res['email_invoice'], err_msg
+
+    def test_format_client_data(self):
+        """Test format client data works."""
+        dat = data.form_client_data.copy()
+        dat2 = data.form_client_data.copy()
+        res = format_client_data(dat)
+
+        err_msg = "Wrong format for client"
+        assert 'contact' in res.keys(), err_msg
+        assert res['contact']['email'] == dat2['email'], err_msg
+        assert res['contact']['first_name'] == dat2['first_name'], err_msg
+        assert res['contact']['last_name'] == dat2['last_name'], err_msg
+        assert res['name'] == dat2['name'], err_msg
+
+        name = "%s %s" % (dat2['first_name'], dat2['last_name'])
+        dat2['name'] = None
+        res = format_client_data(dat2)
+        assert res['name'] == name, err_msg

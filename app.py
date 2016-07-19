@@ -79,5 +79,5 @@ def format_client_data(data):
     client.update(data)
     return client
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     app.run()
