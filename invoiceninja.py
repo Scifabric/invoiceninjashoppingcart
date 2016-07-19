@@ -16,7 +16,6 @@
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
 import requests
-import json
 import datetime
 from dateutil.relativedelta import relativedelta
 

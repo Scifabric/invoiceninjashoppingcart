@@ -17,7 +17,7 @@
 
 from flask import Flask, jsonify, request
 from forms import NewClient, NewInvoice
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask_wtf.csrf import generate_csrf
 from invoiceninja import invoiceNinja
 
