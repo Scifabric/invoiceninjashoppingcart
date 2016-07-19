@@ -73,6 +73,23 @@ class TestApp(object):
         err_msg = "An invoice should be created."
         assert tmp['id'] == 1, err_msg
 
+    @patch('app.invoiceninja')
+    def test_post_new_recurring_invoice(self, mymock):
+        """Test post new recurring invoice works."""
+
+        mymock.create_recurring_invoice.return_value = dict(id=1)
+
+        res = self.tc.get('/newinvoice')
+        tmp = json.loads(res.data)
+
+        data.form_invoice_data['csrf_token'] = tmp['csrf_token']
+        data.form_invoice_data['recurring'] = 'monthly'
+        res = self.tc.post('/newinvoice', data=data.form_invoice_data)
+        tmp = json.loads(res.data)
+        err_msg = "An invoice should be created."
+        assert tmp['id'] == 1, err_msg
+
+
     def test_post_errors_new_invoice(self):
         """Test post new invoice returns errors."""
 
