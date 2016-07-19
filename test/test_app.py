@@ -83,3 +83,14 @@ class TestApp(object):
         err_msg = "A list of errors should be returned."
         assert 'csrf_token' in tmp.keys(), err_msg
         assert 'client_id' in tmp.keys(), err_msg
+
+    @patch('app.invoiceninja')
+    def test_get_countries(self, mymock):
+        """Test get countries returns a list of countries."""
+        mymock.static = dict(countries=[{'name': 'Spain'}])
+        res = self.tc.get('/countries')
+        tmp = json.loads(res.data)
+
+        err_msg = "There should be a list of countries."
+        assert len(tmp) == 1, err_msg
+        assert tmp[0]['name'] == 'Spain', err_msg
