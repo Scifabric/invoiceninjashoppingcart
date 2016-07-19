@@ -54,3 +54,9 @@ def return_403():
 
 invoice_response = FakeRequest(return_invoice, 200, mimetype)
 invoice_response_403 = FakeRequest(return_403, 403, mimetype)
+
+form_client_data = dict(name='University', first_name='Perico',
+                        last_name='Palotes', address1='address1',
+                        address2='address2', city='Madrid', state='Madrid',
+                        postal_code='28045', country='4',
+                        email='perico@palotes.com', vat='IDVAT')
