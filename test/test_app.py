@@ -23,7 +23,7 @@ class TestApp(object):
 
     @patch('app.invoiceninja')
     def test_post_new_client(self, mymock):
-        """Test post new client returns CSRF token."""
+        """Test post new client works."""
 
         mymock.create_client.return_value = dict(id=1)
 
@@ -37,3 +37,17 @@ class TestApp(object):
         print tmp
         err_msg = "A client should be created."
         assert tmp['id'] == 1, err_msg
+
+    def test_post_errors_new_client(self):
+        """Test post new client returns errors."""
+
+        res = self.tc.get('/newclient')
+        err_msg = "There should be a CSRF token"
+        tmp = json.loads(res.data)
+
+        data.form_client_data['first_name'] = None
+        res = self.tc.post('/newclient', data=data.form_client_data)
+        tmp = json.loads(res.data)
+        err_msg = "A list of errors should be returned."
+        assert 'csrf_token' in tmp.keys(), err_msg
+        assert 'first_name' in tmp.keys(), err_msg
