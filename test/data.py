@@ -60,3 +60,6 @@ form_client_data = dict(name='University', first_name='Perico',
                         address2='address2', city='Madrid', state='Madrid',
                         postal_code='28045', country='4',
                         email='perico@palotes.com', vat='IDVAT')
+
+form_invoice_data = dict(client_id='1', product_key='1',
+                         notes='Notes', cost=1, qty=1, recurring=None)

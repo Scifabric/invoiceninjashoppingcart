@@ -41,13 +41,45 @@ class TestApp(object):
     def test_post_errors_new_client(self):
         """Test post new client returns errors."""
 
-        res = self.tc.get('/newclient')
-        err_msg = "There should be a CSRF token"
-        tmp = json.loads(res.data)
-
-        data.form_client_data['first_name'] = None
-        res = self.tc.post('/newclient', data=data.form_client_data)
+        tmp = data.form_client_data.copy()
+        tmp['first_name'] = None
+        res = self.tc.post('/newclient', data=tmp)
         tmp = json.loads(res.data)
         err_msg = "A list of errors should be returned."
         assert 'csrf_token' in tmp.keys(), err_msg
         assert 'first_name' in tmp.keys(), err_msg
+
+
+    def test_get_new_invoice(self):
+        """Test get new invoice returns CSRF token."""
+        res = self.tc.get('/newinvoice')
+        err_msg = "There should be a CSRF token"
+        tmp = json.loads(res.data)
+        assert tmp['csrf_token'], err_msg
+        assert tmp['csrf_token'] != '', err_msg
+
+    @patch('app.invoiceninja')
+    def test_post_new_invoice(self, mymock):
+        """Test post new invoice works."""
+
+        mymock.create_invoice.return_value = dict(id=1)
+
+        res = self.tc.get('/newinvoice')
+        tmp = json.loads(res.data)
+
+        data.form_invoice_data['csrf_token'] = tmp['csrf_token']
+        res = self.tc.post('/newinvoice', data=data.form_invoice_data)
+        tmp = json.loads(res.data)
+        err_msg = "An invoice should be created."
+        assert tmp['id'] == 1, err_msg
+
+    def test_post_errors_new_invoice(self):
+        """Test post new invoice returns errors."""
+
+        tmp = data.form_invoice_data.copy()
+        tmp['client_id'] = None
+        res = self.tc.post('/newinvoice', data=tmp)
+        tmp = json.loads(res.data)
+        err_msg = "A list of errors should be returned."
+        assert 'csrf_token' in tmp.keys(), err_msg
+        assert 'client_id' in tmp.keys(), err_msg

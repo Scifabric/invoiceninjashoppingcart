@@ -46,8 +46,7 @@ def newinvoice():
                 res = invoiceninja.create_invoice(invoice)
             return jsonify(res)
         else:
-            d = dict(error=1)
-            return jsonify(d)
+            return jsonify(form.errors)
 
 
 @app.route("/countries")
