@@ -1,6 +1,6 @@
 import json
 import data
-from app import app
+from app import app, format_client_data, format_invoice_data
 from mock import patch, Mock, MagicMock
 
 
@@ -94,3 +94,14 @@ class TestApp(object):
         err_msg = "There should be a list of countries."
         assert len(tmp) == 1, err_msg
         assert tmp[0]['name'] == 'Spain', err_msg
+
+    def test_format_invoice_data(self):
+        """Test format invoice data works."""
+        dat = data.form_invoice_data.copy()
+        res = format_invoice_data(dat)
+
+        err_msg = "Wrong format for invoice"
+        assert 'invoice_items' in res.keys(), err_msg
+        assert res['invoice_items'] == [dat], err_msg
+        assert 'email_invoice' in res.keys(), err_msg
+        assert res['email_invoice'], err_msg
