@@ -18,7 +18,7 @@
 from flask import Flask, jsonify, request
 from forms import NewClient, NewInvoice, INVOICE_SCHEMA, INVOICE_ITEMS_SCHEMA
 from flask_cors import CORS
-from flask_wtf.csrf import generate_csrf
+from flask_wtf.csrf import generate_csrf, CsrfProtect
 from invoiceninja import invoiceNinja
 from jsonschema import validate, Draft4Validator
 
@@ -27,6 +27,7 @@ app = Flask(__name__)
 app.config.from_object('settings')
 cors = CORS(app, resources={r"/*": {"origins": app.config.get('CORS'), "supports_credentials": True}})
 invoiceninja = invoiceNinja(app.config.get('TOKEN'))
+CsrfProtect(app)
 
 
 @app.route("/newclient", methods=['GET', 'POST'])
@@ -55,9 +56,9 @@ def newinvoice():
         resp['csrf_token'] = generate_csrf()
         return jsonify(resp)
     else:
-        if form.validate_on_submit():
-            invoice = request.get_json()
-            invoice = format_invoice_data(invoice)
+        invoice = request.get_json()
+        invoice = format_invoice_data(invoice)
+        if (not invoice.get('message') and not invoice.get('cause')):
             if (invoice.get('recurring') is not None and
                     invoice.get('recurring') != ''):
                 if invoice.get('email_invoice'):
@@ -66,8 +67,8 @@ def newinvoice():
             else:
                 res = invoiceninja.create_invoice(invoice)
             return jsonify(res)
-        else:
-            return jsonify(form.errors)
+        error = dict(message=invoice['message'])
+        return jsonify(error)
 
 
 @app.route("/countries")
