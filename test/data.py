@@ -63,3 +63,6 @@ form_client_data = dict(name='University', first_name='Perico',
 
 form_invoice_data = dict(client_id='1', product_key='1',
                          notes='Notes', cost=1, qty=1, recurring=None)
+
+invoice_items_json = dict(product_key=None, notes="notes", cost=1, qty=1)
+invoice_json = dict(client_id=1, invoice_items=[invoice_items_json], recurring='')

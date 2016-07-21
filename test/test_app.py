@@ -114,14 +114,24 @@ class TestApp(object):
 
     def test_format_invoice_data(self):
         """Test format invoice data works."""
-        dat = data.form_invoice_data.copy()
-        res = format_invoice_data(dat)
+        res = format_invoice_data(data.invoice_json)
 
         err_msg = "Wrong format for invoice"
-        assert 'invoice_items' in res.keys(), err_msg
-        assert res['invoice_items'] == [dat], err_msg
-        assert 'email_invoice' in res.keys(), err_msg
-        assert res['email_invoice'], err_msg
+        assert res == data.invoice_json, err_msg
+
+        data.invoice_json['client_id'] = "string"
+        res = format_invoice_data(data.invoice_json)
+
+        err_msg = "It should return a format error"
+        msg = "'string' is not of type 'number'"
+        assert res['message'] == msg, res
+
+        data.invoice_json['client_id'] = 1
+        data.invoice_json['invoice_items'][0]['qty'] = '1'
+
+        res = format_invoice_data(data.invoice_json)
+        msg = "'1' is not of type 'number'"
+        assert res['message'] == msg, res
 
     def test_format_client_data(self):
         """Test format client data works."""
