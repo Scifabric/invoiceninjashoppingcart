@@ -16,16 +16,18 @@
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
 from flask import Flask, jsonify, request
-from forms import NewClient, NewInvoice
+from forms import NewClient, NewInvoice, INVOICE_SCHEMA, INVOICE_ITEMS_SCHEMA
 from flask_cors import CORS
-from flask_wtf.csrf import generate_csrf
+from flask_wtf.csrf import generate_csrf, CsrfProtect
 from invoiceninja import invoiceNinja
+from jsonschema import validate, Draft4Validator
 
 
 app = Flask(__name__)
 app.config.from_object('settings')
 cors = CORS(app, resources={r"/*": {"origins": app.config.get('CORS'), "supports_credentials": True}})
 invoiceninja = invoiceNinja(app.config.get('TOKEN'))
+CsrfProtect(app)
 
 
 @app.route("/newclient", methods=['GET', 'POST'])
@@ -54,16 +56,19 @@ def newinvoice():
         resp['csrf_token'] = generate_csrf()
         return jsonify(resp)
     else:
-        if form.validate_on_submit():
-            invoice = format_invoice_data(form.data)
-            if invoice['recurring'] != '':
-                del invoice['email_invoice']
+        invoice = request.get_json()
+        invoice = format_invoice_data(invoice)
+        if (not invoice.get('message') and not invoice.get('cause')):
+            if (invoice.get('recurring') is not None and
+                    invoice.get('recurring') != ''):
+                if invoice.get('email_invoice'):
+                    del invoice['email_invoice']
                 res = invoiceninja.create_recurring_invoice(invoice)
             else:
                 res = invoiceninja.create_invoice(invoice)
             return jsonify(res)
-        else:
-            return jsonify(form.errors)
+        error = dict(message=invoice['message'])
+        return jsonify(error)
 
 
 @app.route("/countries")
@@ -72,15 +77,24 @@ def get_countries():
     return jsonify(invoiceninja.static['countries'])
 
 
-def format_invoice_data(data):
-    invoice = dict()
-    invoice['client_id'] = data['client_id']
-    invoice['recurring'] = data['recurring']
-    del data['client_id']
-    del data['recurring']
-    invoice['invoice_items'] = [data.copy()]
-    invoice['email_invoice'] = True
-    return invoice
+def format_invoice_data(invoice):
+    keys = ['csrf_token', 'qty', 'cost']
+    invoice_validator = Draft4Validator(INVOICE_SCHEMA)
+    invoice_items_validator = Draft4Validator(INVOICE_ITEMS_SCHEMA)
+    for k in keys:
+        if invoice.get(k):
+            del invoice[k]
+    if invoice_validator.is_valid(invoice):
+        for item in invoice.get('invoice_items'):
+            if not invoice_items_validator.is_valid(item):
+                errors = sorted(invoice_items_validator.iter_errors(item),
+                                key=lambda e: e.path)
+                return errors[0].__dict__
+        return invoice
+    else:
+        errors = sorted(invoice_validator.iter_errors(invoice),
+                        key=lambda e: e.path)
+        return errors[0].__dict__
 
 
 def format_client_data(data):
@@ -96,5 +110,6 @@ def format_client_data(data):
     client.update(data)
     return client
 
-if __name__ == "__main__": # pragma: no cover
+
+if __name__ == "__main__":  # pragma: no cover
     app.run()

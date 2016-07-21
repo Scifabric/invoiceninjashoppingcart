@@ -21,9 +21,10 @@ from wtforms.validators import DataRequired, Email
 from wtforms.fields.html5 import EmailField
 
 
-
 class NewClient(Form):
+
     """New Client Form."""
+
     name = StringField('name')
     first_name = StringField('First name', validators=[DataRequired()])
     last_name = StringField('Last name', validators=[DataRequired()])
@@ -38,10 +39,30 @@ class NewClient(Form):
 
 
 class NewInvoice(Form):
+
     """New Invoice Form."""
+
     client_id = StringField('Client ID', validators=[DataRequired()])
     product_key = StringField('Product Key')
     notes = StringField('Notes')
     cost = IntegerField('Cost', validators=[DataRequired()])
     qty = IntegerField('Quantity', validators=[DataRequired()])
     recurring = StringField('Recurring')
+
+
+INVOICE_SCHEMA = {"type": "object",
+                  "properties": {
+                      "client_id": {"type": "number"},
+                      "invoice_items": {"type": "array", "minItems": 1},
+                      "recurring": {"type": "string"},
+                      },
+                  "required": ["client_id", "invoice_items"]}
+
+INVOICE_ITEMS_SCHEMA = {"type": "object",
+                        "properties": {
+                            "notes": {"type": "string"},
+                            "cost": {"type": "number"},
+                            "qty": {"type": "number"},
+                            "productkey": {"type": "string"}
+                            },
+                        "required": ["cost", "qty", "notes"]}
