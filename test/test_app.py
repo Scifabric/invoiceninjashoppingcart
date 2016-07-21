@@ -93,6 +93,7 @@ class TestApp(object):
         data.form_invoice_data['recurring'] = 'monthly'
         invoice_rec = data.invoice_json.copy()
         invoice_rec['recurring'] = 'monthly'
+        invoice_rec['email_invoice'] = 'monthly'
         res = self.tc.post('/newinvoice', data=json.dumps(invoice_rec),
                            content_type='application/json',
                            headers={'X-CSRFToken': tmp['csrf_token']})
