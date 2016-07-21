@@ -78,16 +78,22 @@ def get_countries():
 
 def format_invoice_data(invoice):
     keys = ['csrf_token', 'qty', 'cost']
+    invoice_validator = Draft4Validator(INVOICE_SCHEMA)
+    invoice_items_validator = Draft4Validator(INVOICE_ITEMS_SCHEMA)
     for k in keys:
         if invoice.get(k):
             del invoice[k]
-    if Draft4Validator(INVOICE_SCHEMA).is_valid(invoice):
+    if invoice_validator.is_valid(invoice):
         for item in invoice.get('invoice_items'):
-            if not Draft4Validator(INVOICE_ITEMS_SCHEMA).is_valid(item):
-                return False
+            if not invoice_items_validator.is_valid(item):
+                errors = sorted(invoice_items_validator.iter_errors(item),
+                                key=lambda e: e.path)
+                return errors[0].__dict__
         return invoice
     else:
-        return False
+        errors = sorted(invoice_validator.iter_errors(invoice),
+                        key=lambda e: e.path)
+        return errors[0].__dict__
 
 
 def format_client_data(data):
