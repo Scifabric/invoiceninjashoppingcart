@@ -82,9 +82,12 @@ def format_invoice_data(invoice):
         if invoice.get(k):
             del invoice[k]
     if Draft4Validator(INVOICE_SCHEMA).is_valid(invoice):
+        for item in invoice.get('invoice_items'):
+            if not Draft4Validator(INVOICE_ITEMS_SCHEMA).is_valid(item):
+                return False
         return invoice
     else:
-        print Draft4Validator(INVOICE_SCHEMA).is_valid(invoice)
+        return False
 
 
 def format_client_data(data):

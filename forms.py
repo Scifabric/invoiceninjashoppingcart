@@ -53,7 +53,7 @@ class NewInvoice(Form):
 INVOICE_SCHEMA = {"type": "object",
                   "properties": {
                       "client_id": {"type": "number"},
-                      "invoice_items": {"type": "array"},
+                      "invoice_items": {"type": "array", "minItems": 1},
                       "recurring": {"type": "string"},
                       },
                   "required": ["client_id", "invoice_items"]}
