@@ -135,6 +135,7 @@ class TestApp(object):
 
         wrong_data = data.invoice_json.copy()
         wrong_data['client_id'] = "string"
+        wrong_data['csrf_token'] = "string"
         wrong_data['invoice_items'] = [data.invoice_items_json.copy()]
         res = format_invoice_data(wrong_data)
 
