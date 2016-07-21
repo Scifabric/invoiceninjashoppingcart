@@ -52,11 +52,17 @@ class NewInvoice(Form):
 
 INVOICE_SCHEMA = {"type": "object",
                   "properties": {
-                      "client_id": {"type": "string"},
-                      "product_key": {"type": "string"},
-                      "notes": {"type": "string"},
-                      "cost": {"type": "number"},
-                      "qty": {"type": "number"},
+                      "client_id": {"type": "number"},
+                      "invoice_items": {"type": "array"},
                       "recurring": {"type": "string"},
                       },
-                  "required": ["client_id", "cost", "qty"]}
+                  "required": ["client_id", "invoice_items"]}
+
+INVOICE_ITEMS_SCHEMA = {"type": "object",
+                        "properties": {
+                            "notes": {"type": "string"},
+                            "cost": {"type": "number"},
+                            "qty": {"type": "number"},
+                            "productkey": {"type": "string"}
+                            },
+                        "required": ["cost", "qty", "notes"]}
