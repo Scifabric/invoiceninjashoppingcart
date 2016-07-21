@@ -50,15 +50,13 @@ class NewInvoice(Form):
     recurring = StringField('Recurring')
 
 
-invoiceSchema = {
-        "type": "object",
-        "properties": {
-            "client_id": {"type": "string"},
-            "product_key": {"type": "string"},
-            "notes": {"type": "string"},
-            "cost": {"type": "number"},
-            "qty": {"type": "number"},
-            "recurring": {"type": "string"},
-            },
-        "required": ["client_id", "cost", "qty"]
-        }
+INVOICE_SCHEMA = {"type": "object",
+                  "properties": {
+                      "client_id": {"type": "string"},
+                      "product_key": {"type": "string"},
+                      "notes": {"type": "string"},
+                      "cost": {"type": "number"},
+                      "qty": {"type": "number"},
+                      "recurring": {"type": "string"},
+                      },
+                  "required": ["client_id", "cost", "qty"]}
